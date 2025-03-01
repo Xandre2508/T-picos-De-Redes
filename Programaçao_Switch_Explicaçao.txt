@@ -1,0 +1,38 @@
+Explicação do Código:
+1. Classe Switch:
+
+A classe Switch simula o comportamento básico de um switch de rede. Vamos explicar cada parte do código:
+
+    Atributo mac_table:
+        Este é um dicionário Python que armazena a correspondência entre os endereços MAC e as portas do switch.
+        Exemplo: { "00:1A:2B:3C:4D:5E": 1, "00:1A:2B:3C:4D:5F": 2 } significa que o dispositivo com o endereço MAC 00:1A:2B:3C:4D:5E está na porta 1, e o dispositivo 00:1A:2B:3C:4D:5F está na porta 2.
+
+2. Método learn_mac(self, mac_address, port):
+
+    Esse método é responsável por "aprender" um endereço MAC e associá-lo a uma porta específica do switch.
+    Quando um dispositivo se conecta ao switch, o switch aprende o seu endereço MAC e a porta à qual ele está conectado.
+    A tabela mac_table é atualizada com o endereço MAC e a porta associada a ele.
+
+3. Método forward(self, src_mac, dst_mac, packet):
+
+    Esse método é o responsável por encaminhar pacotes de dados.
+    Quando um pacote chega ao switch, o switch verifica o endereço MAC de destino (dst_mac) e, com base nisso, decide para qual porta enviar o pacote.
+    Se o MAC de destino já estiver na tabela mac_table, o switch envia o pacote para a porta associada.
+    Se o MAC de destino não for encontrado na tabela, o switch envia o pacote para todas as portas, exceto a porta de origem, como um mecanismo de flooding (comum em switches de rede reais).
+
+4. Fluxo de execução do código (Testando o Switch):
+
+    Aprendendo os MACs:
+        O código começa aprendendo 3 endereços MAC e associando-os às portas do switch.
+        O endereço 00:1A:2B:3C:4D:5E é aprendido na porta 1, 00:1A:2B:3C:4D:5F na porta 2, e 00:1A:2B:3C:4D:60 na porta 3.
+
+    Encaminhando pacotes:
+        Em seguida, o código simula o envio de pacotes.
+            O primeiro pacote é enviado do dispositivo 00:1A:2B:3C:4D:5E para 00:1A:2B:3C:4D:5F. O switch encontra o MAC de destino na tabela e envia o pacote para a porta 2.
+            O segundo pacote tenta ir de 00:1A:2B:3C:4D:5E para 00:1A:2B:3C:4D:61. Como esse MAC não está na tabela, o switch envia o pacote para todas as portas (exceto a de origem).
+            O terceiro pacote vai de 00:1A:2B:3C:4D:60 para 00:1A:2B:3C:4D:5F. O switch encontra o MAC de destino na tabela e envia o pacote para a porta 2.
+
+Comportamento Real do Switch:
+
+    Flooding: Quando o switch não conhece o destino de um pacote, ele faz um "flooding", ou seja, envia o pacote para todas as portas (exceto a de origem).
+    Aprendizagem dinâmica de MAC: O switch aprende a associação de MAC e porta para encaminhar os pacotes de forma eficiente. Assim, o switch não precisa mais fazer flooding depois de aprender os dispositivos e suas respectivas portas.
